@@ -5,7 +5,7 @@ characters, a gallery, and flip-through scans of the original manuals.
 
 **Live site:** https://your-site-url-here
 
-![Screenshot](./gallery/ICOSCREENSHOT.png)
+![Screenshot](./gallery/screenshot.png)
 
 ## Features
 
