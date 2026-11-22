@@ -1,0 +1,542 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: radial-gradient(circle at center, #3a3933, #1f1e1b);
+  color: #f2efe6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 20px 24px;
+  overflow-x: hidden; /* book slides sideways a little */
+}
+
+.back-link {
+  align-self: flex-start;
+  color: #d8c27a;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.title {
+  margin: 6px 0 18px;
+  letter-spacing: 8px;
+  font-weight: 600;
+  font-size: 2.4rem;
+  text-align: center;
+}
+
+/* ---------- Book (BIG!) ----------
+   change the numbers in --page-w to resize.
+   It is limited by the screen width AND height so it always fits. */
+.book {
+  --page-w: min(1100px, 48vw, calc(86vh / var(--ratio, 1.35)));
+  position: relative;
+  width: calc(var(--page-w) * 2);
+  height: calc(var(--page-w) * var(--ratio, 1.35));
+  perspective: 2600px;
+  font-size: max(10px, calc(var(--page-w) / 26));
+  animation: dropIn 0.9s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; margin-top: -40px; }
+  to   { opacity: 1; margin-top: 0; }
+}
+
+/* ---------- Paper under the pages ---------- */
+.base {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #e8e2d0;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  opacity: 0; /* JS fades these in when the book opens */
+}
+
+.base-left  { left: 0;  border-radius: 6px 0 0 6px; }
+
+/* ---------- Leaves ---------- */
+.leaf {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center; /* the spine */
+  transform-style: preserve-3d;
+  cursor: grab;
+  touch-action: none; /* lets us drag with a finger */
+}
+
+.leaf.dragging {
+  cursor: grabbing;
+}
+
+/* ---------- Pages ---------- */
+.page {
+  position: absolute;
+  inset: 0;
+  padding: 5% 5%;
+  background: #f4efe0;
+  color: #2b2a26;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.front {
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 30px 0 30px -24px rgba(0, 0, 0, 0.35);
+}
+
+.back {
+  transform: rotateY(180deg);
+  border-radius: 6px 0 0 6px;
+  box-shadow: inset -30px 0 30px -24px rgba(0, 0, 0, 0.35);
+}
+
+/* dark shade that grows while the page is turning (JS sets --shade) */
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.05));
+  opacity: var(--shade, 0);
+  pointer-events: none;
+}
+
+.page h2 {
+  font-size: 4.5em;
+  letter-spacing: 0.2em;
+}
+
+.page h3 {
+  font-size: 1.7em;
+  margin-bottom: 0.6em;
+}
+
+.page p {
+  line-height: 1.5;
+  font-size: 1.1em;
+}
+
+.page img {
+  width: 100%;
+  max-height: 82%;
+  min-height: 40%;
+  object-fit: contain;
+  background: #ddd6c0; /* shows if the image is missing */
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.cover {
+  background: #3b4a3f;
+  color: #f2efe6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cover small {
+  margin-top: 2em;
+  color: #d8c27a;
+}
+
+/* ---------- Hint + buttons ---------- */
+.hint {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.controls {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.controls button {
+  padding: 9px 22px;
+  background: transparent;
+  color: #f2efe6;
+  border: 1px solid #f2efe6;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.controls button:hover:not(:disabled) {
+  background: #d8c27a;
+  border-color: #d8c27a;
+  color: #222;
+}
+
+.controls button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+#pageInfo {
+  min-width: 100px;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book { animation: none; }
+}
+
+/* ---------- Full-page scans ----------
+   add class "scan" to a page: <div class="page front scan"> */
+.page.scan {
+  padding: 0;
+  background: #222;
+}
+
+.page.scan img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  object-fit: contain; /* shows the whole scan. use "cover" to fill the page and crop the edges */
+  display: block;
+}
+
+/* ---------- Background image (faint, behind everything) ----------
+   put your picture in the images folder as background.jpg
+   the dark color from the body is still there, the image just sits on top of it */
+body::before {
+  content: "";
+  position: fixed;   /* stays still while you scroll */
+  inset: 0;
+  z-index: -1;       /* behind the book and the text */
+  background: url("./Media/ico-cover.jpg") center / cover no-repeat;
+  opacity: 0.12;     /* 0 = invisible, 1 = full picture. try 0.08 to 0.25 */
+  filter: blur(2px) grayscale(40%); /* optional: softer look. delete this line if you don't want it */
+  pointer-events: none;
+}
+
+/* ---------- Manual chooser ---------- */
+.hidden {
+  display: none;
+}
+
+.chooser,
+.reader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.7s ease; /* plays again every time it is shown */
+}
+
+.chooser.hidden,
+.reader.hidden {
+  display: none;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* when a book is open the big title goes away to leave room */
+.reading .title {
+  display: none;
+}
+
+.chooser {
+  flex: 1;                   /* takes the free space under the title */
+  width: 100%;
+  justify-content: center;   /* puts the covers in the middle of the screen */
+  padding-bottom: 40px;
+}
+
+.chooser-sub {
+  font-size: 1.5rem;
+  opacity: 0.85;
+  text-align: center;
+}
+
+/* covers wrap into rows and the last row stays centered
+   desktop: 4 per row, tablet: 3 per row, phone: 2 per row */
+.choices {
+  /* cover width: big on large screens, smaller if the screen is short or narrow */
+  --card-w: min(250px, calc((94vw - 120px) / 4), max(130px, calc((100vh - 300px) / 2.8)));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 34px 40px;
+  max-width: calc(var(--card-w) * 4 + 120px); /* 4 per row */
+  margin-top: 34px;
+  perspective: 1200px;
+}
+
+.choice {
+  width: var(--card-w);
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* the cover looks like a book that opens a little when you hover */
+.choice img {
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  object-fit: cover;
+  background: #3b4a3f; /* shows if the cover is missing */
+  border-radius: 3px 8px 8px 3px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+  transform-origin: left center;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.choice:hover img,
+.choice:focus-visible img {
+  transform: rotateY(-22deg) translateY(-8px);
+  box-shadow: 12px 22px 34px rgba(0, 0, 0, 0.6);
+}
+
+.choice-label {
+  margin-top: 8px;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  transition: color 0.3s;
+}
+
+.choice:hover .choice-label {
+  color: #d8c27a;
+}
+
+.choice small {
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+@media (max-width: 900px) {
+  .choices {
+    --card-w: min(250px, calc((94vw - 80px) / 3));
+    max-width: calc(var(--card-w) * 3 + 80px); /* 3 per row */
+  }
+}
+
+@media (max-width: 640px) {
+  .choices {
+    --card-w: calc((92vw - 20px) / 2);
+    max-width: 92vw;
+    gap: 26px 20px; /* 2 per row */
+  }
+}
+
+/* ---------- Back to the chooser ---------- */
+.change-btn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #d8c27a;
+  font-family: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.change-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Loading screen ---------- */
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18vh;
+  animation: fadeUp 0.5s ease;
+}
+
+.loader.hidden {
+  display: none;
+}
+
+.loader-title {
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+}
+
+.loader-bar {
+  width: min(320px, 70vw);
+  height: 4px;
+  background: rgba(242, 239, 230, 0.2);
+  overflow: hidden;
+}
+
+.loader-fill {
+  width: 0%;
+  height: 100%;
+  background: #d8c27a;
+  transition: width 0.25s ease; /* the bar grows smoothly */
+}
+
+.loader-count {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+/* covers fade in when they are ready */
+.choice img {
+  opacity: 0;
+}
+
+.choice img.loaded {
+  opacity: 1;
+}
+
+/* last page when the book has an odd number of pages: it stays put */
+.leaf.single {
+  cursor: default;
+}
+
+/* ---------- Reading mode: the book is the main part ---------- */
+/* the reader fills the screen and keeps the book in the middle */
+.reader {
+  flex: 1;
+  width: 100%;
+  justify-content: center;
+}
+
+/* small, quiet links in the corners */
+.reading .back-link {
+  position: fixed;
+  top: 16px;
+  left: 22px;
+  z-index: 50;
+  opacity: 0.75;
+  transition: opacity 0.3s;
+}
+
+.reading .back-link:hover {
+  opacity: 1;
+}
+
+.reading #backBtn {
+  position: fixed;
+  top: 14px;
+  right: 22px;
+  z-index: 50;
+  margin: 0;
+  opacity: 0.75;
+  transition: opacity 0.3s;
+}
+
+.reading #backBtn:hover {
+  opacity: 1;
+}
+
+.book-name {
+  opacity: 0.6;
+}
+
+.book-name:not(:empty)::before {
+  content: "\00b7  "; /* small dot before the manual name */
+}
+
+/* the tip shows for a few seconds, then fades away */
+.reading .hint {
+  position: fixed;
+  bottom: 52px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  pointer-events: none;
+  animation: hintFade 1s ease 6s forwards;
+}
+
+@keyframes hintFade {
+  to { opacity: 0; }
+}
+
+/* page arrows: small round buttons on the sides of the screen */
+.reading .controls {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  display: block;
+  pointer-events: none; /* only the buttons can be clicked */
+  z-index: 40;
+}
+
+.reading .controls button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  padding: 0 0 4px;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 239, 230, 0.3);
+  font-size: 1.8rem;
+  line-height: 1;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reading #prevBtn { left: 20px; }
+.reading #nextBtn { right: 20px; }
+
+.reading .controls button:disabled {
+  opacity: 0.12;
+}
+
+/* page numbers: tiny text at the bottom */
+.reading #pageInfo {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 0;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+/* phones: arrows go to the bottom so they don't cover the book */
+@media (max-width: 700px) {
+  .reading .controls button {
+    top: auto;
+    bottom: 10px;
+    transform: none;
+    width: 38px;
+    height: 38px;
+  }
+
+  .reading #prevBtn { left: calc(50% - 110px); }
+  .reading #nextBtn { right: calc(50% - 110px); }
+
+  .book-name { display: none; }
+}

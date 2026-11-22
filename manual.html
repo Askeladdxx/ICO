@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICO - PS2 Manuals</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <a href="index.html" class="back-link">&larr; Back to home</a>
+    <h1 class="title">ICO Manuals</h1>
+
+    <!-- STEP 1: choose a manual (the covers are built by manual.js) -->
+    <section class="chooser" id="chooser">
+      <p class="chooser-sub">Choose a manual to start reading</p>
+      <div class="choices" id="choices"></div>
+    </section>
+
+    <!-- LOADING SCREEN (shown while the pages download) -->
+    <section class="loader hidden" id="loader">
+      <p class="loader-title">Opening <span id="loadName"></span></p>
+      <div class="loader-bar">
+        <div class="loader-fill" id="loaderFill"></div>
+      </div>
+      <p class="loader-count" id="loaderCount">Loading pages 0 / 0</p>
+      <button class="change-btn" id="cancelLoad">Cancel</button>
+    </section>
+
+    <!-- STEP 2: the book (hidden until a manual is chosen) -->
+    <section class="reader hidden" id="reader">
+      <div class="book" id="book">
+        <div class="base base-left"></div>
+        <!-- the leaves (pages) are built by manual.js -->
+      </div>
+
+      <p class="hint">Pull a page across, or click it. Arrow keys work too.</p>
+
+      <div class="controls">
+        <button id="prevBtn" aria-label="Previous page">&#8249;</button>
+        <span id="pageInfo">Cover</span>
+        <button id="nextBtn" aria-label="Next page">&#8250;</button>
+      </div>
+
+      <button class="change-btn" id="backBtn">
+        &#9776; All manuals <span class="book-name" id="bookName"></span>
+      </button>
+    </section>
+
+    <script src="manual.js"></script>
+  </body>
+</html>

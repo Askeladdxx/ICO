@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICO - A fan page</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- NAVBAR (stays at the top while you scroll) -->
+    <nav class="navbar" id="navbar">
+      <a href="#home" class="logo"
+        ><img class="logoImage" src="./Media/ico white.png" alt=""
+      /></a>
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+        &#9776;
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#characters">Characters</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#manuals">Manuals</a></li>
+      </ul>
+    </nav>
+
+    <!-- HOME: video landing -->
+    <header class="hero" id="home">
+      <!-- put your video in the video folder as hero.mp4 -->
+      <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="images/hero.jpg"
+      >
+        <source src="./Media/ICO.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-overlay"></div>
+
+      <div class="hero-text">
+        <img
+          class="hero-logo"
+          src="./Media/ico white.png"
+          alt="ICO white logo"
+        />
+        <p>A tale set in an unknown era,<br />at an unknown place.</p>
+      </div>
+      <div class="bottom-fade"></div>
+      <a href="#overview" class="scroll-cue">Scroll &darr;</a>
+    </header>
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="inner split reveal">
+        <div class="text">
+          <h2>OVERVIEW</h2>
+          <h3>Story</h3>
+          <p>
+            ICO is a PlayStation 2 adventure game by Team Ico, directed by
+            Fumito Ueda and released in 2001. You play as Ico, a young boy born
+            with horns. His village believes the horns are a bad omen, so he is
+            taken to a vast, isolated castle and sealed inside a stone coffin as
+            a sacrifice. When the coffin breaks open, Ico escapes and finds
+            Yorda, a pale girl locked in a cage. She speaks a language Ico can't
+            understand, but they decide to escape together. The castle's Queen
+            wants Yorda for her own purposes, and dark shadow creatures try to
+            drag Yorda away. Almost nothing is explained in words, so the story
+            is told through what you see and feel as you go.
+          </p>
+          <h3>Gameplay</h3>
+          <p>
+            ICO is a puzzle-adventure game with platforming and light combat.
+            You explore the castle's towers, bridges and courtyards to find a
+            way out. You solve puzzles by pulling levers, pushing blocks and
+            finding paths that Ico can climb but Yorda can't. You can hold
+            Yorda's hand to pull her along, and you can call her to follow you.
+            Only she can open the magic doors that block the way. When shadow
+            creatures attack, Ico fights them with a stick or sword while
+            protecting Yorda. If they catch her, you have to get her back. You
+            save your progress by sitting on stone benches. There is no health
+            bar or map on the screen, and that keeps the world quiet and
+            focused.
+          </p>
+        </div>
+        <img
+          src="./Media/Ico-cover 2.jpeg"
+          alt="The windmill tower in the castle"
+          class="side-img"
+        />
+      </div>
+    </section>
+
+    <!-- CHARACTERS -->
+    <section class="section characters" id="characters">
+      <div class="inner reveal">
+        <h2>CHARACTERS</h2>
+        <div class="cards">
+          <article class="card">
+            <div class="card-img">
+              <img src="./gallery/ico_image.png" alt="Ico" />
+            </div>
+            <h3>Ico</h3>
+            <p>
+              A horned boy cast out by his village. Brave and stubborn, he
+              refuses to leave Yorda behind.
+            </p>
+          </article>
+          <article class="card">
+            <div class="card-img">
+              <img src="./gallery/yorda_profile.jpg" alt="Yorda" />
+            </div>
+            <h3>Yorda</h3>
+            <p>
+              A quiet girl in white who speaks a language Ico can't understand.
+              She needs his help to cross the castle.
+            </p>
+          </article>
+          <article class="card">
+            <div class="card-img">
+              <img src="./gallery/queen.jpg" alt="The Queen" />
+            </div>
+            <h3>The Queen</h3>
+            <p>The ruler of the castle, who has her own plans for Yorda.</p>
+          </article>
+          <article class="card">
+            <div class="card-img">
+              <img src="./gallery/shadow.jpg" alt="Shadow creatures" />
+            </div>
+            <h3>Shadow Creatures</h3>
+            <p>
+              Dark shapes that rise from the ground and try to drag Yorda away.
+            </p>
+          </article>
+        </div>
+      </div>
+      <div class="bottom-dark"></div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="section dark" id="gallery">
+      <div class="inner reveal">
+        <h2>Gallery</h2>
+        <p class="lead">
+          Magazine issues, ads and fan art. Click an image to see it bigger.
+        </p>
+
+        <div class="chips" id="galleryChips">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="magazine">Magazines</button>
+          <button class="chip" data-filter="ad">Ads</button>
+          <button class="chip" data-filter="fanart">Fan art</button>
+        </div>
+
+        <div class="gallery" id="galleryGrid">
+          <figure class="tile" data-type="magazine">
+            <img
+              src="./gallery/gamenow-issue_2-page_002.jpg"
+              alt="Magazine issue 1"
+            />
+            <figcaption>Gamenow issue 2 Page 002</figcaption>
+          </figure>
+          <figure class="tile" data-type="magazine">
+            <img
+              src="./gallery/gamepro-issue-159-pages_046_047.jpg"
+              alt="Magazine issue 2"
+            />
+            <figcaption>Magazine issue 2</figcaption>
+          </figure>
+          <figure class="tile" data-type="ad">
+            <img
+              src="./gallery/official_uk_playstation_magazine-issue 83-pages_024_025.jpg"
+              alt="Advertisement 1"
+            />
+            <figcaption>
+              Official UK PlayStation Magazine Issue 83 pages 24 & 25
+            </figcaption>
+          </figure>
+          <figure class="tile" data-type="ad">
+            <img src="./gallery/ico_aus_magazine.jpg" alt="Advertisement 2" />
+            <figcaption>ICO AUS magazine</figcaption>
+          </figure>
+          <figure class="tile" data-type="ad">
+            <img src="./gallery/playzone-(04_2002)-page_103.png" alt="Ad" />
+            <figcaption>Playzone 04 2002 page 103</figcaption>
+          </figure>
+          <figure class="tile" data-type="fanart">
+            <img
+              src="./gallery/25fa2d19-76f9-4db2-89fa-f23624b2e377.png"
+              alt="Fan art 2"
+            />
+            <figcaption>Fan art 1</figcaption>
+          </figure>
+          <figure class="tile" data-type="fanart">
+            <img
+              src="./gallery/38bd397f-eceb-49d5-ad9e-3bd7f6fbba18.jpg"
+              alt="Fan art 3"
+            />
+            <figcaption>In-game Screenshot</figcaption>
+          </figure>
+          <figure class="tile" data-type="fanart">
+            <img
+              src="./gallery/947404daab3bccdfc67d15b97d55a9b2.jpg"
+              alt="Fan art 4"
+            />
+            <figcaption>Fan art</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANUALS: one flip book here, the rest are on manual.html -->
+    <section class="section alt manuals-section" id="manuals">
+      <div class="inner reveal manuals-layout">
+        <div class="manuals-text">
+          <h2>Manuals</h2>
+          <p class="lead">
+            Flip through the original PS2 manuals page by page, just like
+            holding the real booklet.
+          </p>
+          <p class="mp-name" id="mpName"></p>
+          <a href="manual.html" class="btn">View more manuals &rarr;</a>
+          <p class="mp-tip">Pull a page across, or click it, to turn it.</p>
+        </div>
+
+        <div class="mp-wrap">
+          <!-- the leaves (pages) are built by manual-preview.js -->
+          <div class="mp-book" id="mpBook">
+            <div class="mp-base"></div>
+            <div class="mp-swipe" id="mpSwipe">&larr; Swipe the page</div>
+          </div>
+
+          <div class="mp-controls">
+            <button class="mp-arrow" id="mpPrev" aria-label="Previous page">
+              &#8249;
+            </button>
+            <span id="mpInfo">Cover</span>
+            <button class="mp-arrow" id="mpNext" aria-label="Next page">
+              &#8250;
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER (logo space in the corner) -->
+    <footer class="footer">
+      <div class="logo-space">
+        <img src="./Media/yves-logo.png" alt="Yves" />
+      </div>
+      <p>A fan-made page. ICO belongs to Team Ico and Sony.</p>
+    </footer>
+
+    <!-- Picture viewer for the gallery -->
+    <div class="lightbox hidden" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+        &times;
+      </button>
+      <img id="lightboxImg" alt="" />
+      <p id="lightboxCap"></p>
+    </div>
+
+    <!-- Background music (put your file in the music folder) -->
+    <audio
+      id="bgMusic"
+      src="./Media/heal from ICO.mp3"
+      loop
+      preload="auto"
+    ></audio>
+    <button class="sound-btn" id="soundBtn" aria-label="Toggle music">
+      &#128263; Music off
+    </button>
+
+    <!-- label that follows the mouse over the manual book -->
+    <div class="mp-cursor" id="mpCursor">Drag the page to turn</div>
+
+    <script src="script.js"></script>
+    <script src="manual-preview.js"></script>
+  </body>
+</html>
