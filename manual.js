@@ -208,13 +208,12 @@ function openBook(index) {
   loader.classList.remove("hidden");
   loadName.textContent = b.name;
   loaderFill.style.width = "0%";
-  loaderCount.textContent = "Loading pages 0 / " + Math.min(b.total, FIRST_LOAD);
+  loaderCount.textContent = "Loading pages...";
 
   const startTime = performance.now();
 
   preloadBook(b, function (done, count) {
     loaderFill.style.width = (done / count * 100) + "%";
-    loaderCount.textContent = "Loading pages " + done + " / " + count;
   }).then(function (images) {
     cache[index] = { images: images, pages: b.total };
 
@@ -343,6 +342,7 @@ document.addEventListener("keydown", function (e) {
   if (!current) return; // only when a book is open
   if (e.key === "ArrowRight") next();
   if (e.key === "ArrowLeft") prev();
+  if (e.key === "Escape") closeBook(); // Esc goes back to all manuals
 });
 
 // ---------- Dragging a page with mouse or finger ----------

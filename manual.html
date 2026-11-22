@@ -26,7 +26,7 @@
       <div class="loader-bar">
         <div class="loader-fill" id="loaderFill"></div>
       </div>
-      <p class="loader-count" id="loaderCount">Loading pages 0 / 0</p>
+      <p class="loader-count" id="loaderCount">Loading pages...</p>
       <button class="change-btn" id="cancelLoad">Cancel</button>
     </section>
 
@@ -37,7 +37,7 @@
         <!-- the leaves (pages) are built by manual.js -->
       </div>
 
-      <p class="hint">Pull a page across, or click it. Arrow keys work too.</p>
+      <p class="hint">Pull a page across, or click it. Arrow keys work too. Press Esc to go back.</p>
 
       <div class="controls">
         <button id="prevBtn" aria-label="Previous page">&#8249;</button>
@@ -45,8 +45,8 @@
         <button id="nextBtn" aria-label="Next page">&#8250;</button>
       </div>
 
-      <button class="change-btn" id="backBtn">
-        &#9776; All manuals <span class="book-name" id="bookName"></span>
+      <button class="change-btn" id="backBtn" aria-label="Back to all manuals">
+        &larr; All manuals <span class="book-name" id="bookName"></span>
       </button>
     </section>
 
