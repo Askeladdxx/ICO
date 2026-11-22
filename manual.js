@@ -54,6 +54,12 @@ let flipped = 0;     // how many leaves are on the left
 let drag = null;     // info about the drag in progress
 let loadToken = 0;   // lets us ignore a loading that was cancelled
 const cache = {};    // images already downloaded, for each manual
+let pageImgs = [];   // pageImgs[n] = the <img> of page n (loaded only when it is close)
+
+// ---------- Loading settings (change these numbers if you like) ----------
+const FIRST_LOAD = 6; // pages downloaded BEFORE the book opens
+const AHEAD = 8;      // pages loaded in front of the page being read
+const BEHIND = 4;     // pages kept loaded behind it
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -93,9 +99,11 @@ function makePage(b, side, number) {
   // a number higher than the total stays blank
   if (number <= b.total) {
     const img = document.createElement("img");
-    img.src = pagePath(b, number);
+    img.dataset.src = pagePath(b, number); // downloaded later by loadNear()
     img.alt = "Page " + number;
     img.draggable = false;
+    img.decoding = "async";
+    pageImgs[number] = img;
     page.appendChild(img);
   }
   return page;
@@ -109,6 +117,7 @@ function buildBook(b, pages) {
   frames = [];
   flipped = 0;
   pageCount = pages;
+  pageImgs = [];
 
   for (let p = 1; p <= pages; p += 2) {
     const leaf = document.createElement("div");
@@ -144,35 +153,45 @@ function buildBook(b, pages) {
 }
 
 // ---------- Open / close a book ----------
-// downloads every page before the book opens
+// downloads only the first few pages before the book opens.
+// the other pages are loaded while the person reads (see loadNear below)
 function preloadBook(b, onProgress) {
   return new Promise(function (resolve) {
+    const count = Math.min(b.total, FIRST_LOAD);
     const images = [];
     let done = 0;
 
     function finish() {
       done++;
-      onProgress(done, b.total);
-      if (done === b.total) resolve(images);
+      onProgress(done, count);
+      if (done === count) resolve(images);
     }
 
-    for (let n = 1; n <= b.total; n++) {
+    for (let n = 1; n <= count; n++) {
       const img = new Image();
-      img.onload = function () { img.ok = true; finish(); };
-      img.onerror = function () { img.ok = false; finish(); };
+      img.onload = finish;
+      img.onerror = finish;
       img.src = pagePath(b, n);
       images.push(img); // keep them so the browser doesn't forget them
     }
   });
 }
 
-// counts the real pages: empty or missing pages at the end are removed
-function countPages(images) {
-  let n = images.length;
-  while (n > 0 && !images[n - 1].ok) {
-    n--;
+// downloads the pages around the one being read (the nearest ones first)
+function loadPage(n) {
+  const img = pageImgs[n];
+  if (img && !img.getAttribute("src")) {
+    img.src = img.dataset.src;
   }
-  return n;
+}
+
+function loadNear() {
+  if (pageImgs.length === 0) return;
+  const centre = flipped * 2 + 1; // the right-hand page on screen
+  for (let d = 0; d <= AHEAD; d++) {
+    loadPage(centre + d);
+    if (d <= BEHIND) loadPage(centre - d);
+  }
 }
 
 function openBook(index) {
@@ -189,7 +208,7 @@ function openBook(index) {
   loader.classList.remove("hidden");
   loadName.textContent = b.name;
   loaderFill.style.width = "0%";
-  loaderCount.textContent = "Loading pages 0 / " + b.total;
+  loaderCount.textContent = "Loading pages 0 / " + Math.min(b.total, FIRST_LOAD);
 
   const startTime = performance.now();
 
@@ -197,7 +216,7 @@ function openBook(index) {
     loaderFill.style.width = (done / count * 100) + "%";
     loaderCount.textContent = "Loading pages " + done + " / " + count;
   }).then(function (images) {
-    cache[index] = { images: images, pages: countPages(images) };
+    cache[index] = { images: images, pages: b.total };
 
     // keep the loading screen for at least 0.6s so it doesn't flash
     const wait = Math.max(0, 600 - (performance.now() - startTime));
@@ -284,6 +303,7 @@ function animateTo(i, target) {
 
 // ---------- Buttons and label ----------
 function updateUI() {
+  loadNear();
   prevBtn.disabled = flipped === 0;
   nextBtn.disabled = flipped >= total;
 
