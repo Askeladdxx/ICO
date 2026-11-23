@@ -301,3 +301,41 @@ function updateTextColors() {
 }
 
 const colorTimer = setInterval(updateTextColors, 500);
+
+// ----- 11. Keep the background video playing -----
+// Browsers sometimes pause a video (tab switch, power saving, scrolling away, a stall).
+// This starts it again whenever the top of the page is on screen.
+heroVideo.muted = true;          // muted videos are allowed to autoplay
+heroVideo.defaultMuted = true;
+heroVideo.playsInline = true;
+
+let heroVisible = true;
+
+function resumeVideo() {
+  if (document.hidden || !heroVisible) return;
+  if (heroVideo.paused || heroVideo.ended) {
+    const attempt = heroVideo.play();
+    if (attempt && attempt.catch) attempt.catch(function () {}); // blocked: wait for a tap
+  }
+}
+
+// only fight a pause while the video is actually on screen
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(function (entries) {
+    heroVisible = entries[0].isIntersecting;
+    if (heroVisible) resumeVideo();
+  }).observe(heroEl);
+}
+
+heroVideo.addEventListener("pause", function () { setTimeout(resumeVideo, 300); });
+heroVideo.addEventListener("ended", resumeVideo);
+document.addEventListener("visibilitychange", resumeVideo);   // came back to the tab
+window.addEventListener("pageshow", resumeVideo);             // back/forward button
+setInterval(resumeVideo, 3000);                               // safety check
+
+// phones in Low Power Mode refuse autoplay until the first touch
+["pointerup", "touchend", "click", "keydown"].forEach(function (name) {
+  document.addEventListener(name, resumeVideo, { passive: true });
+});
+
+resumeVideo();
