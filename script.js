@@ -154,29 +154,56 @@ document.querySelectorAll("img").forEach(function (img) {
   if (img.complete && img.naturalWidth === 0) markBroken();
 });
 
-// ----- 9. Background music (mute / unmute) -----
-const music = document.getElementById("bgMusic");
+// ----- 9. Background music (plays right away, the button mutes / unmutes) -----
+const music = document.getElementById("music");
 const soundBtn = document.getElementById("soundBtn");
 
 music.volume = 0.5;
-music.muted = true;
 
-// Attempt autoplay (muted)
-music.play().catch(error => {
-    console.log("Autoplay prevented:", error);
+// icon only: speaker = sound is playing, crossed speaker = silent
+function showSoundIcon() {
+  const on = !music.paused && !music.muted;
+  soundBtn.innerHTML = on ? "&#128266;" : "&#128263;";
+  soundBtn.setAttribute("aria-label", on ? "Mute music" : "Play music");
+}
+
+// 1) try to play with sound as soon as the page opens
+music.play().then(showSoundIcon).catch(function () {
+  // 2) browsers block sound until the visitor does something on the page,
+  //    so the music starts on the very first click, tap or key press
+  showSoundIcon();
+
+  const startEvents = ["pointerup", "touchend", "click", "keydown"];
+
+  function stopWaiting() {
+    startEvents.forEach(function (name) {
+      document.removeEventListener(name, startOnFirstTouch);
+    });
+  }
+
+  function startOnFirstTouch(e) {
+    if (soundBtn.contains(e.target)) return; // the button has its own click
+    if (!music.paused) { stopWaiting(); return; }
+    music.play().then(function () {
+      showSoundIcon();
+      stopWaiting();
+    }).catch(function () {});
+  }
+
+  startEvents.forEach(function (name) {
+    document.addEventListener(name, startOnFirstTouch);
+  });
 });
 
 soundBtn.addEventListener("click", function () {
-    if (music.muted) {
-        music.muted = false;
-        music.play();
-
-        soundBtn.innerHTML = "&#128266; Music on";
-    } else {
-        music.muted = true;
-
-        soundBtn.innerHTML = "&#128263; Music off";
-    }
+  if (music.paused) {
+    // the music was blocked, so the first press starts it
+    music.muted = false;
+    music.play().then(showSoundIcon).catch(function () {});
+  } else {
+    music.muted = !music.muted; // mute / unmute
+    showSoundIcon();
+  }
 });
 
 // ----- 10. Text color follows the video (dark text on a bright video) -----
