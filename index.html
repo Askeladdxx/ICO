@@ -266,15 +266,11 @@
     </div>
 
     <!-- Background music (put your file in the music folder) -->
-    <audio
-      id="bgMusic"
-      src="./Media/heal from ICO.mp3"
-      loop
-      preload="auto"
-    ></audio>
-    <button class="sound-btn" id="soundBtn" aria-label="Toggle music">
-      &#128263; Music off
-    </button>
+    <audio id="music" loop>
+      <source src="Media/heal from ICO.mp3" type="audio/mpeg" />
+    </audio>
+
+    <button id="soundBtn">&#128263; Music off</button>
 
     <!-- label that follows the mouse over the manual book -->
     <div class="mp-cursor" id="mpCursor">Drag the page to turn</div>

@@ -161,16 +161,22 @@ const soundBtn = document.getElementById("soundBtn");
 music.volume = 0.5;
 music.muted = true;
 
-soundBtn.addEventListener("click", function () {
-  if (music.muted) {
-    music.muted = false;
-    music.play();
-    soundBtn.innerHTML = "&#128266; Music on";
+// Attempt autoplay (muted)
+music.play().catch(error => {
+    console.log("Autoplay prevented:", error);
+});
 
-  } else {
-    music.muted = true;
-    soundBtn.innerHTML = "&#128263; Music off";
-  }
+soundBtn.addEventListener("click", function () {
+    if (music.muted) {
+        music.muted = false;
+        music.play();
+
+        soundBtn.innerHTML = "&#128266; Music on";
+    } else {
+        music.muted = true;
+
+        soundBtn.innerHTML = "&#128263; Music off";
+    }
 });
 
 // ----- 10. Text color follows the video (dark text on a bright video) -----

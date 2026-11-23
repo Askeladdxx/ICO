@@ -1,14 +1,9 @@
-// ---------- SETTINGS: one entry for each manual (7 total) ----------
-// name / subtitle: the text shown under the cover
-// folder:  where the scans are (end with /)
-// pattern: the file name without the extension. {n} becomes the page number
-// total:   how many scanned pages that manual has
 const books = [
   { name: "Official Guidebook", 
     folder: "./Manuals/ICO-Official_guidebook/", pattern: "{n}_ICO_Official_Guidebook_{n}", extension: ".jpg", digits: 3, total: 100 },
 
   { name: "NTSC-U PS2",
-    folder: "./Manuals/NTSC-U PS2 Manual/", pattern: "{n}", extension: ".jpe", digits: 3, total: 36 },
+    folder: "./Manuals/NTSC-U PS2 Manual/", pattern: "{n}", extension: ".jpeg", digits: 3, total: 36 },
 
   { name: "Japanese PS2",
     folder: "./Manuals/japanesePS2Manual/", pattern: "{n}", extension: ".png", digits: 1, total: 28 },
@@ -208,12 +203,13 @@ function openBook(index) {
   loader.classList.remove("hidden");
   loadName.textContent = b.name;
   loaderFill.style.width = "0%";
-  loaderCount.textContent = "Loading pages...";
+  loaderCount.textContent = "Loading pages 0 / " + Math.min(b.total, FIRST_LOAD);
 
   const startTime = performance.now();
 
   preloadBook(b, function (done, count) {
     loaderFill.style.width = (done / count * 100) + "%";
+    loaderCount.textContent = "Loading pages " + done + " / " + count;
   }).then(function (images) {
     cache[index] = { images: images, pages: b.total };
 
@@ -342,7 +338,6 @@ document.addEventListener("keydown", function (e) {
   if (!current) return; // only when a book is open
   if (e.key === "ArrowRight") next();
   if (e.key === "ArrowLeft") prev();
-  if (e.key === "Escape") closeBook(); // Esc goes back to all manuals
 });
 
 // ---------- Dragging a page with mouse or finger ----------
