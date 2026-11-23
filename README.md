@@ -3,7 +3,7 @@
 A fan-made website for the PlayStation 2 game ICO, with an overview,
 characters, a gallery, and flip-through scans of the original manuals.
 
-**Live site:** https://your-site-url-here
+**Live site:** https://icofanpage.netlify.app
 
 ![Screenshot](./gallery/screenshot.png.png)
 
